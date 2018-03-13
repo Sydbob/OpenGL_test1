@@ -3,18 +3,17 @@
 #include <GLFW\glfw3.h>
 #include "stb_image.h"
 #include <array>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include "Shader.h"
+#include <glm/glm/gtc/type_ptr.hpp>
+#include <glm/glm/glm.hpp>
+#include <glm/glm/gtc/matrix_transform.hpp>
 
 class Quad {
 
 public:
 	Quad();
-	void GenerateQuad(float size);
-	void DrawQuad();
+	void GenerateQuad();
+	void DrawQuad(Shader shaderProg, float size);
 	unsigned int GetEBO();
 private:
 	unsigned int VBO, VAO, EBO;

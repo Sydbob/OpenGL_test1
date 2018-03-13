@@ -8,7 +8,7 @@ Quad::Quad():
 
 unsigned int Quad::GetEBO() { return EBO; }
 
-void Quad::GenerateQuad(float size) 
+void Quad::GenerateQuad() 
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -16,15 +16,7 @@ void Quad::GenerateQuad(float size)
 
 	//-----le triangle
 	glBindVertexArray(VAO);
-	//adjust vertices according to size
-	for (unsigned int i = 0; i < sizeof(vertices); i++)
-	{
-		if (i == 3 || i == 8 || i ==13)
-			i += 2;
-		if (i == 18)
-			break; 
-		vertices[i] = vertices[i] * size;
-	}
+
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -43,7 +35,12 @@ void Quad::GenerateQuad(float size)
 	glEnableVertexAttribArray(1);
 }
 
-void Quad::DrawQuad() {
+void Quad::DrawQuad(Shader shaderProg, float size) {
 	glBindVertexArray(EBO);
+	glm::mat4 trans;
+	trans = glm::scale(trans, glm::vec3(size, size, size));
+	unsigned int transformLoc = glGetUniformLocation(shaderProg.ID, "transform");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 }

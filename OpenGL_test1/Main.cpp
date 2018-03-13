@@ -48,13 +48,15 @@ int main()
 	}
 
 	//enabling depth testing
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	//shaders
-	Shader ourShader("shader.vs", "shader.fs");
+	Shader ourShader("shader.vs", "shader.fs"), ourShader2("shader.vs", "shader.fs");
 	
 	//the quad
-	Quad quad;
-	quad.GenerateQuad(0.5);
+	Quad BG, quad, quad2;
+	BG.GenerateQuad();
+	quad.GenerateQuad();
+	quad2.GenerateQuad();
 	
 	
 	
@@ -67,13 +69,14 @@ int main()
 	Texture texture2("awesomefaceC.jpg", 1);
 	texture2.GenerateTexture();
 	
-	
+	//setting texture smaplers -------------
 	//tell sampler which texture belongs to which sampler
-	//ourShader.use(); // activate shader first
+	ourShader.use(); // activate shader first
+	ourShader.setInt("texture1", 0);
 	//glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 1);
-	//same as above just using our own method
-	//ourShader.setInt("texture1", 1);
-	//ourShader.setInt("texture2", 1);
+	ourShader2.use();
+	ourShader2.setInt("texture1", 1);
+	//end of texture samplers-----------------
 	
 
 	//render loop
@@ -92,9 +95,16 @@ int main()
 		//texture binding
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture.GetTextureID());
-		
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2.GetTextureID());
 
+		//container rendering
 		ourShader.use();
+		BG.DrawQuad(ourShader, 1.0f);
+		ourShader2.use();
+		quad.DrawQuad(ourShader2, 0.5f);
+		ourShader.use();
+		quad2.DrawQuad(ourShader, 0.1f);
 
 		/*
 		//setting transformations
@@ -115,10 +125,6 @@ int main()
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform1f(glGetUniformLocation(ourShader.ID, "mixAmount"), mixAmount);*/
 
-		//container rendering
-		quad.DrawQuad();
-
-		
 		/*for (unsigned int i = 1; i < 11; i++)
 		{
 			glm::mat4 model;
